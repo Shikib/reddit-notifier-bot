@@ -57,7 +57,7 @@ A new post matches your notification queries! Check it out [here](%s).
     for post in self.subr.get_new():
       if post.id not in self.notified:
         self.process_new_post(post)
-        self.notified.append(post)
+        self.notified.append(post.id)
 
   # get the appropriate pos (used as id here) for a user
   def get_user_pos(self, user):
