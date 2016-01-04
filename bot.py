@@ -147,6 +147,15 @@ A new post matches your notification queries! Check it out [here](%s).
           self.add_subscription(text, self.reddit.get_redditor(word[3:]))
           self.log_line(self.reddit.get_redditor(word[3:]), "!notifyme %s" % text)
     print("DONE")
+
+  def parse_log_file(self):
+    alltext = self.log_file.readlines()
+    for line in alltext:
+      username, text = line.split(":")
+      if "!notifyme" in text.lower():
+        notify_text = text[text.index("!notifyme") + len("!notifyme"):]
+        self.add_subscription(notify_text, self.reddit.get_redditor(username))
+        print(line)
           
      
 # First arg: bot user name
@@ -154,6 +163,7 @@ A new post matches your notification queries! Check it out [here](%s).
 # Third arg: user name for complaints account 
 nb = NotifierBot('', '', '') 
 
+nb.parse_logfile()
 nb.parse_automod('automod.txt')
 
 while True:
