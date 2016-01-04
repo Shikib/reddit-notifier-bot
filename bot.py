@@ -132,8 +132,8 @@ A new post matches your notification queries! Check it out [here](%s).
 
   # clear notified list
   def clear_notified_list(self):
-    if len(self.notified) >= 50:
-      self.notified = self.notified[-50:]
+    if len(self.notified) >= 250:
+      self.notified = self.notified[-250:]
 
   def parse_automod(self, file_name):
     f = open(file_name, 'r')
@@ -149,7 +149,8 @@ A new post matches your notification queries! Check it out [here](%s).
     print("DONE")
 
   def parse_log_file(self):
-    alltext = self.log_file.readlines()
+    f = open('logfile.txt', 'r')
+    alltext = f.readlines()
     for line in alltext:
       username, text = line.split(":")
       if "!notifyme" in text.lower():
