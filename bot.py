@@ -35,7 +35,7 @@ A new post matches your notification queries! Check it out [here](%s).
 |[Private Message](http://www.reddit.com/message/compose/?to=%s&subject=Notify Me)|[Source](http://github.com/shikib/reddit-notifier-bot)|[Feedback](http://www.reddit.com/message/compose/?to=%s&subject=Feedback)
     ''' % (user.name, post.permalink, self.user_name, self.complaints_uname)
 
-    user.send_message(self.reddit, message_subject, message_text)
+    self.reddit.send_message(user, message_subject, message_text)
 
   # get list of users we need to notify
   def get_users_to_notify(self, title):
@@ -172,7 +172,7 @@ while True:
   try:
     nb.process_new_comments()
     nb.process_new_messages()
-    #nb.process_new_posts()
+    nb.process_new_posts()
     nb.clear_notified_list()
   except HTTPError:
     continue
