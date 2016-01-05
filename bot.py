@@ -26,6 +26,7 @@ class NotifierBot:
     self.log_file = open('log_file.txt', 'a')    
 
   def notify_user(self, user, post):
+    message_subject = "A champion/artist you're following has been posted to LolFanArt!"
     message_text = '''
 Hi %s,
 
@@ -34,7 +35,7 @@ A new post matches your notification queries! Check it out [here](%s).
 |[Private Message](http://www.reddit.com/message/compose/?to=%s&subject=Notify Me)|[Source](http://github.com/shikib/reddit-notifier-bot)|[Feedback](http://www.reddit.com/message/compose/?to=%s&subject=Feedback)
     ''' % (user.name, post.permalink, self.user_name, self.complaints_uname)
 
-    user.send_message(self.reddit, message=message_text)
+    user.send_message(self.reddit, message_subject, message_text)
 
   # get list of users we need to notify
   def get_users_to_notify(self, title):
@@ -149,7 +150,7 @@ A new post matches your notification queries! Check it out [here](%s).
     print("DONE")
 
   def parse_log_file(self):
-    f = open('logfile.txt', 'r')
+    f = open('log_file.txt', 'r')
     alltext = f.readlines()
     for line in alltext:
       username, text = line.split(":")
@@ -164,7 +165,7 @@ A new post matches your notification queries! Check it out [here](%s).
 # Third arg: user name for complaints account 
 nb = NotifierBot('', '', '') 
 
-nb.parse_logfile()
+nb.parse_log_file()
 nb.parse_automod('automod.txt')
 
 while True:
