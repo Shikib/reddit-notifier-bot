@@ -3,7 +3,7 @@ import time
 from requests.exceptions import HTTPError
 
 # Number of seconds to sleep between each check
-SLEEP_TIME = 60
+SLEEP_TIME = 1200
 
 class NotifierBot:
   def __init__(self, user_name, password, complaints_uname):
@@ -32,7 +32,7 @@ Hi %s,
 
 A new post matches your notification queries! Check it out [here](%s).
 \n_____\n
-|[Private Message](http://www.reddit.com/message/compose/?to=%s&subject=Notify Me)|[Source](http://github.com/shikib/reddit-notifier-bot)|[Feedback](http://www.reddit.com/message/compose/?to=%s&subject=Feedback)
+[Private Message](http://www.reddit.com/message/compose/?to=%s&subject=Notify Me) | [Source](http://github.com/shikib/reddit-notifier-bot) | [Feedback](http://www.reddit.com/message/compose/?to=%s&subject=Feedback)
     ''' % (user.name, post.permalink, self.user_name, self.complaints_uname)
 
     self.reddit.send_message(user, message_subject, message_text)
@@ -141,29 +141,35 @@ A new post matches your notification queries! Check it out [here](%s).
     alltext = f.read()
     sections = alltext.split("---")  
     for section in sections:
-      text = section.split('"')[1].lower()
-      users = []
-      for word in section.split():
-        if word[:3] == "/u/":
-          self.add_subscription(text, self.reddit.get_redditor(word[3:]))
-          self.log_line(self.reddit.get_redditor(word[3:]), "!notifyme %s" % text)
+      try:
+        text = section.split('"')[1].lower()
+        users = []
+        for word in section.split():
+          if word[:3] == "/u/":
+            self.add_subscription(text, self.reddit.get_redditor(word[3:]))
+            self.log_line(self.reddit.get_redditor(word[3:]), "!notifyme %s" % text)
+      except praw.errors.NotFound:
+        continue
     print("DONE")
 
   def parse_log_file(self):
     f = open('log_file.txt', 'r')
     alltext = f.readlines()
     for line in alltext:
-      username, text = line.split(":")
-      if "!notifyme" in text.lower():
-        notify_text = text[text.index("!notifyme") + len("!notifyme"):]
-        self.add_subscription(notify_text, self.reddit.get_redditor(username))
-        print(line)
+      try:
+        username, text = line.split(":")
+        if "!notifyme" in text.lower():
+          notify_text = text[text.index("!notifyme") + len("!notifyme"):]
+          self.add_subscription(notify_text, self.reddit.get_redditor(username))
+          print(line)
+      except praw.errors.NotFound:
+        continue
           
      
 # First arg: bot user name
 # Second arg: bot password
 # Third arg: user name for complaints account 
-nb = NotifierBot('', '', '') 
+nb = NotifierBot('ValorBot', 'givemekarmanerds', 'burrowl') 
 
 nb.parse_log_file()
 nb.parse_automod('automod.txt')
